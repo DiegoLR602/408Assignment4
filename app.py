@@ -1,3 +1,4 @@
+from multiprocessing.reduction import DupFd
 from db_operations import db_operations
 from helper import helper
 
@@ -130,6 +131,56 @@ def add_to_database():
     query = "INSERT INTO songs VALUES("+placeholders+")"
     db_ops.bulk_insert(query,newData)
 
+# def songID(Name):
+#     query = '''
+#     SELECT songID
+#     FROM songs
+#     WHERE Name = %s
+#     ''' % Name
+
+#     return db_ops.single_record(query)
+
+def update_song_information():
+    song_name = input("What song do you want to modify?: ")
+    update_list = '''
+    1) Song Name 
+    2) Album Name 
+    3) Artist Name 
+    4) Release Date 
+    5) Explicit
+    '''
+    print(update_list)
+    update_choice = helper.get_choice([1,2,3,4,5])
+
+    match update_choice:
+        case 1: 
+            attribute = 'Name'
+            user_attribute = input('New Song Name: ')
+        case 2: 
+            attribute = 'Album'
+            user_attribute = input('New Album Name: ')
+        case 3: 
+            attribute = 'Artist'
+            user_attribute = input('New Artist Name: ')
+        case 4: 
+            attribute = 'releaseDate'
+            user_attribute = input('New Release Date: ')
+        case 5:
+            attribute = 'Explicit'
+            print('New Explicit rating (0 = not-explicit, 1 = explicit): ')
+            user_attribute = str(helper.get_choice([0,1]))
+
+    songID = songID(song_name)
+
+    query = '''
+    UPDATE songs 
+    SET %s = %s
+    WHERE songID = %s
+    ''' % (attribute, user_attribute, songID)
+
+    db_ops.single_attribute(query)
+        
+
 #Main
 #Introduce user to their playlist
 print("Welcome to your playlist!")
@@ -146,6 +197,7 @@ while True:
             search_by_feature()
         case 4:
             add_to_database()
+            # update_song_information()
         case 5:
             print("Goodbye!")
             break
