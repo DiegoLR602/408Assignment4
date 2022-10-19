@@ -122,13 +122,13 @@ def search_by_feature():
     helper.pretty_print(db_ops.name_placeholder_query(query,dictionary))
 
 def add_to_database():
-    attribute_count = len(data[0])
-    placeholders = ("?,"*attribute_count)[:-1]
-    query = "INSERT INTO songs VALUES("+placeholders+")"
-    db_ops.bulk_insert(query,data)
     print("Enter the path for the songs you want to insert")
     path = input("PATH: ")
-    bulk_insert
+    newData = helper.data_cleaner(path)
+    attribute_count = len(newData[0])
+    placeholders = ("?,"*attribute_count)[:-1]
+    query = "INSERT INTO songs VALUES("+placeholders+")"
+    db_ops.bulk_insert(query,newData)
 
 #Main
 #Introduce user to their playlist
