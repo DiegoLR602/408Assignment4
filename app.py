@@ -30,11 +30,13 @@ def options():
     Select from the following menu options:\n
     1) Find Songs by Artist\n
     2) Find Songs by Genre\n
-    3) Find Songs by feature\n
+    3) Find Songs by Feature\n
     4) Add Song to Database\n
-    5) Exit
+    5) Update Song Information\n
+    6) Delete Song by Name\n
+    7) Exit
     ''')
-    return helper.get_choice([1,2,3,4,5])
+    return helper.get_choice([1,2,3,4,5,6,7])
 
 #print all artists, allow a user to select one, then return all songs from that artist
 def search_by_artist():
@@ -125,11 +127,24 @@ def search_by_feature():
 def add_to_database():
     print("Enter the path for the songs you want to insert")
     path = input("PATH: ")
-    newData = helper.data_cleaner(path)
-    attribute_count = len(newData[0])
+    new_data = helper.data_cleaner(path)
+    attribute_count = len(new_data[0])
     placeholders = ("?,"*attribute_count)[:-1]
     query = "INSERT INTO songs VALUES("+placeholders+")"
-    db_ops.bulk_insert(query,newData)
+    db_ops.bulk_insert(query,new_data)
+
+
+def delete_song():
+    print("Enter the song you want to delete")
+    deleted_song_name = input("SONG: ")
+    song_ID = songID(deleted_song_name)
+    query = '''
+    DELETE
+    FROM songs
+    WHERE songID = '%s'
+    ''' % (song_ID)
+
+    db_ops.execute(query)
 
 def songID(Name):
     query = '''
@@ -179,7 +194,6 @@ def update_song_information():
     ''' % (attribute, user_attribute, song_ID)
 
     db_ops.execute(query)
-        
 
 #Main
 #Introduce user to their playlist
@@ -196,9 +210,12 @@ while True:
         case 3:
             search_by_feature()
         case 4:
-            #add_to_database()
-            update_song_information()
+            add_to_database()
         case 5:
+            update_song_information()
+        case 6:
+            delete_song()
+        case 7:
             print("Goodbye!")
             break
 
