@@ -131,14 +131,13 @@ def add_to_database():
     query = "INSERT INTO songs VALUES("+placeholders+")"
     db_ops.bulk_insert(query,newData)
 
-# def songID(Name):
-#     query = '''
-#     SELECT songID
-#     FROM songs
-#     WHERE Name = %s
-#     ''' % Name
-
-#     return db_ops.single_record(query)
+def songID(Name):
+    query = '''
+    SELECT songID
+    FROM songs
+    WHERE Name = '%s'
+    ''' % Name
+    return db_ops.single_record(query)
 
 def update_song_information():
     song_name = input("What song do you want to modify?: ")
@@ -170,15 +169,16 @@ def update_song_information():
             print('New Explicit rating (0 = not-explicit, 1 = explicit): ')
             user_attribute = str(helper.get_choice([0,1]))
 
-    songID = songID(song_name)
+    song_ID = songID(song_name)
+    print(song_ID)
 
     query = '''
     UPDATE songs 
-    SET %s = %s
-    WHERE songID = %s
-    ''' % (attribute, user_attribute, songID)
+    SET %s = '%s'
+    WHERE songID = '%s'
+    ''' % (attribute, user_attribute, song_ID)
 
-    db_ops.single_attribute(query)
+    db_ops.execute(query)
         
 
 #Main
@@ -196,8 +196,8 @@ while True:
         case 3:
             search_by_feature()
         case 4:
-            add_to_database()
-            # update_song_information()
+            #add_to_database()
+            update_song_information()
         case 5:
             print("Goodbye!")
             break

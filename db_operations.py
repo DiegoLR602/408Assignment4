@@ -57,6 +57,11 @@ class db_operations():
         self.cursor.execute(query)
         print('Table Created')
 
+    #execute query
+    def execute(self, query):
+        self.cursor.execute(query)
+        self.connection.commit()
+
     # close connection
     def destructor(self):
         self.connection.close()
