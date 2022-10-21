@@ -8,10 +8,13 @@ data = helper.data_cleaner("songs.csv")
 
 #Fills the songs table with all data from songs.csv if it is empty
 def pre_process():
-    if is_empty() == False:
-        print("Enter the path for the songs you want to insert")
-        path = input("PATH: ")
-        data = helper.data_cleaner(path)
+    if not is_empty():
+        print("Do you want to insert new songs? 1) Yes, 2) No: ")
+        user_input = helper.get_choice([1,2])
+        if(user_input == 1):
+            print("Enter the path for the songs you want to insert")
+            path = input("PATH: ")
+            data = helper.data_cleaner(path)
     attribute_count = len(data[0])
     placeholders = ("?,"*attribute_count)[:-1]
     query = "INSERT INTO songs VALUES("+placeholders+")"
