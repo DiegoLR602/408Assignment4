@@ -147,6 +147,9 @@ def songID(Name):
     ''' % Name
     return db_ops.single_record(query)
 
+def exists(Name):
+    return not songID(Name)
+
 def update_song_information():
     song_name = input("What song do you want to modify?: ")
     update_list = '''
@@ -177,8 +180,8 @@ def update_song_information():
             print('New Explicit rating (0 = not-explicit, 1 = explicit): ')
             user_attribute = str(helper.get_choice([0,1]))
 
-    song_ID = songID(song_name)
-    print(song_ID)
+    if exists(song_name):
+        song_ID = songID(song_name)
 
     query = '''
     UPDATE songs 
