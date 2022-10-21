@@ -8,7 +8,7 @@ data = helper.data_cleaner("songs.csv")
 
 #Fills the songs table with all data from songs.csv if it is empty
 def pre_process():
-    if !is_empty():
+    if is_empty() == False:
         print("Enter the path for the songs you want to insert")
         path = input("PATH: ")
         data = helper.data_cleaner(path)
@@ -34,10 +34,9 @@ def options():
     1) Find Songs by Artist\n
     2) Find Songs by Genre\n
     3) Find Songs by Feature\n
-    4) Add Song to Database\n
-    5) Update Song Information\n
-    6) Delete Song by Name\n
-    7) Exit
+    4) Update Song Information\n
+    5) Delete Song by Name\n
+    6) Exit
     ''')
     return helper.get_choice([1,2,3,4,5,6,7])
 
@@ -127,15 +126,6 @@ def search_by_feature():
         dictionary["lim"] = num
     helper.pretty_print(db_ops.name_placeholder_query(query,dictionary))
 
-def add_to_database():
-    print("Enter the path for the songs you want to insert")
-    path = input("PATH: ")
-    new_data = helper.data_cleaner(path)
-    attribute_count = len(new_data[0])
-    placeholders = ("?,"*attribute_count)[:-1]
-    query = "INSERT INTO songs VALUES("+placeholders+")"
-    db_ops.bulk_insert(query,new_data)
-
 
 def delete_song():
     print("Enter the song you want to delete")
@@ -213,12 +203,10 @@ while True:
         case 3:
             search_by_feature()
         case 4:
-            add_to_database()
-        case 5:
             update_song_information()
-        case 6:
+        case 5:
             delete_song()
-        case 7:
+        case 6:
             print("Goodbye!")
             break
 
