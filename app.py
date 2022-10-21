@@ -8,17 +8,22 @@ data = helper.data_cleaner("songs.csv")
 
 #Fills the songs table with all data from songs.csv if it is empty
 def pre_process():
-    if not is_empty():
-        print("Do you want to insert new songs? 1) Yes, 2) No: ")
-        user_input = helper.get_choice([1,2])
-        if(user_input == 1):
-            print("Enter the path for the songs you want to insert")
-            path = input("PATH: ")
-            data = helper.data_cleaner(path)
-    attribute_count = len(data[0])
-    placeholders = ("?,"*attribute_count)[:-1]
-    query = "INSERT INTO songs VALUES("+placeholders+")"
-    db_ops.bulk_insert(query,data)
+    if is_empty():  
+        attribute_count = len(data[0])
+        placeholders = ("?,"*attribute_count)[:-1]
+        query = "INSERT INTO songs VALUES("+placeholders+")"
+        db_ops.bulk_insert(query,data)
+
+    print("Do you want to insert new songs? 1) Yes, 2) No: ")
+    user_input = helper.get_choice([1,2])
+    if(user_input == 1):
+        print("Enter the path for the songs you want to insert")
+        path = input("PATH: ")
+        new_data = helper.data_cleaner(path)
+        attribute_count = len(data[0])
+        placeholders = ("?,"*attribute_count)[:-1]
+        query = "INSERT INTO songs VALUES("+placeholders+")"
+        db_ops.bulk_insert(query,new_data)
 
 #Return if songs table is empty
 def is_empty():
@@ -162,6 +167,11 @@ def update_song_information():
     4) Release Date 
     5) Explicit
     '''
+
+    print(exists(song_name))
+    song_ID = songID(song_name)
+    print("this ran")
+
     print(update_list)
     update_choice = helper.get_choice([1,2,3,4,5])
 
@@ -182,9 +192,6 @@ def update_song_information():
             attribute = 'Explicit'
             print('New Explicit rating (0 = not-explicit, 1 = explicit): ')
             user_attribute = str(helper.get_choice([0,1]))
-
-    if exists(song_name):
-        song_ID = songID(song_name)
 
     query = '''
     UPDATE songs 
