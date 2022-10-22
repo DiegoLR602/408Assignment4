@@ -148,15 +148,16 @@ def delete_song():
     db_ops.execute(query)
 
 def songID(Name):
-    query = '''
-    SELECT songID
-    FROM songs
-    WHERE Name = '%s'
-    ''' % Name
-    return db_ops.single_record(query)
-
-def exists(Name):
-    return not songID(Name)
+    try:
+        query = '''
+        SELECT songID
+        FROM songs
+        WHERE Name = '%s'
+        ''' % Name
+        return db_ops.single_record(query)
+    except: 
+        print("Song does not exist")
+        return "-1"
 
 def update_song_information():
     song_name = input("What song do you want to modify?: ")
@@ -168,38 +169,36 @@ def update_song_information():
     5) Explicit
     '''
 
-    print(exists(song_name))
     song_ID = songID(song_name)
-    print("this ran")
+    if (song_ID != "-1"):
+        print(update_list)
+        update_choice = helper.get_choice([1,2,3,4,5])
 
-    print(update_list)
-    update_choice = helper.get_choice([1,2,3,4,5])
+        match update_choice:
+            case 1: 
+                attribute = 'Name'
+                user_attribute = input('New Song Name: ')
+            case 2: 
+                attribute = 'Album'
+                user_attribute = input('New Album Name: ')
+            case 3: 
+                attribute = 'Artist'
+                user_attribute = input('New Artist Name: ')
+            case 4: 
+                attribute = 'releaseDate'
+                user_attribute = input('New Release Date: ')
+            case 5:
+                attribute = 'Explicit'
+                print('New Explicit rating (0 = not-explicit, 1 = explicit): ')
+                user_attribute = str(helper.get_choice([0,1]))
 
-    match update_choice:
-        case 1: 
-            attribute = 'Name'
-            user_attribute = input('New Song Name: ')
-        case 2: 
-            attribute = 'Album'
-            user_attribute = input('New Album Name: ')
-        case 3: 
-            attribute = 'Artist'
-            user_attribute = input('New Artist Name: ')
-        case 4: 
-            attribute = 'releaseDate'
-            user_attribute = input('New Release Date: ')
-        case 5:
-            attribute = 'Explicit'
-            print('New Explicit rating (0 = not-explicit, 1 = explicit): ')
-            user_attribute = str(helper.get_choice([0,1]))
+        query = '''
+        UPDATE songs 
+        SET %s = '%s'
+        WHERE songID = '%s'
+        ''' % (attribute, user_attribute, song_ID)
 
-    query = '''
-    UPDATE songs 
-    SET %s = '%s'
-    WHERE songID = '%s'
-    ''' % (attribute, user_attribute, song_ID)
-
-    db_ops.execute(query)
+        db_ops.execute(query)
 
 #Main
 #Introduce user to their playlist
