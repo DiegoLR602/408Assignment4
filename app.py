@@ -20,11 +20,7 @@ def pre_process():
         print("Enter the path for the songs you want to insert")
         path = input("PATH: ")
         new_data = helper.data_cleaner(path)
-        # This would be for the bonus (doesn't work):
-        # for tup in new_data:
-        #     if (songID(tup[1]) == tup[0]):
-        #         new_data.remove(tup)
-        attribute_count = len(data[0])
+        attribute_count = len(new_data[0])
         placeholders = ("?,"*attribute_count)[:-1]
         query = "INSERT INTO songs VALUES("+placeholders+")"
 
