@@ -20,7 +20,7 @@ def pre_process():
         print("Enter the path for the songs you want to insert")
         path = input("PATH: ")
         new_data = helper.data_cleaner(path)
-        # This would be for the bonus (doesn't work):
+        # This would be for bonus 1 (doesn't work):
         # for tup in new_data:
         #     if (songID(tup[1]) == tup[0]):
         #         new_data.remove(tup)
@@ -49,7 +49,8 @@ def options():
     3) Find Songs by Feature\n
     4) Update Song Information\n
     5) Delete Song by Name\n
-    6) Exit
+    6) Remove All Null Values\n
+    7) Exit
     ''')
     return helper.get_choice([1,2,3,4,5,6,7])
 
@@ -114,6 +115,7 @@ def search_by_genre():
         dictionary["lim"] = num
     helper.pretty_print(db_ops.name_placeholder_query(query, dictionary))
 
+#Option 3, search by specific feature
 def search_by_feature():
     #give users features and return choice
     features = ['Danceability', 'Liveness', 'Loudness']
@@ -139,7 +141,7 @@ def search_by_feature():
         dictionary["lim"] = num
     helper.pretty_print(db_ops.name_placeholder_query(query,dictionary))
 
-
+# Option 5, delete specified song
 def delete_song():
     print("Enter the song you want to delete")
     deleted_song_name = input("SONG: ")
@@ -152,6 +154,7 @@ def delete_song():
 
     db_ops.execute(query)
 
+#Helper function to get songID
 def songID(Name):
     try:
         query = '''
@@ -164,6 +167,7 @@ def songID(Name):
         print("The song", Name, "does not exist")
         return "-1"
 
+#Option 4, update song information
 def update_song_information():
     song_name = input("What song do you want to modify?: ")
     update_list = '''
@@ -205,6 +209,25 @@ def update_song_information():
 
         db_ops.execute(query)
 
+#Bonus 3 - remove all null values from table
+def remove_null():
+    query = '''
+    DELETE FROM songs
+    WHERE Name IS NULL
+            OR Artist IS NULL
+            OR Album IS NULL
+            OR releaseDate IS NULL
+            OR Genre IS NULL
+            OR Explicit IS NULL
+            OR Duration IS NULL
+            OR Energy IS NULL
+            OR Danceability IS NULL
+            OR Acousticness IS NULL
+            OR Liveness IS NULL
+            OR Loudness IS NULL;
+    '''
+    db_ops.execute(query)
+
 #Main
 #Introduce user to their playlist
 print("Welcome to your playlist!")
@@ -224,6 +247,8 @@ while True:
         case 5:
             delete_song()
         case 6:
+            remove_null()
+        case 7:
             print("Goodbye!")
             break
 
